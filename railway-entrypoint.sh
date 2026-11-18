@@ -64,6 +64,9 @@ if ! node /app/railway/setup.cjs; then
   exec node /app/railway/notice.cjs "Crumbs could not create its admin account, so it stays closed instead of showing a setup page anyone could claim."
 fi
 
+# Drop the page cache of the notes database and images every 15 minutes (see the script).
+( while sleep 900; do nice -n 19 sh /app/railway/drop-file-cache.sh "${DATA_DIR:-/data}" /tmp; done ) &
+
 log "starting Crumbs on port $PORT for $ORIGIN"
 started=$(date +%s)
 stopping=

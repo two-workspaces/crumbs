@@ -48,6 +48,7 @@ Deploy, wait for the green check, and open the Railway domain. Sign in with `ADM
 - **ORIGIN** is set from the Railway domain, so SvelteKit's upload check and OAuth callbacks work without setup. Set it yourself for a custom domain.
 - **Client address:** login lockout (5 failed attempts locks an address out for 15 minutes) uses the real visitor's address from Railway's edge (`X-Real-IP`), so a stranger's guesses don't lock you out.
 - **Uploads:** images up to 10 MB (`BODY_SIZE_LIMIT=12M` leaves room for the thumbnail).
+- **Memory:** Crumbs idles at about 30 MB. Linux keeps uploaded and viewed images in its page cache, which Railway counts as the service's memory, so the template drops that cache every 15 minutes.
 - **Healthcheck:** `/login`.
 - **Image:** upstream's `ghcr.io/bretzel-app/crumbs:0.38.0`, pinned, plus a small entrypoint. The schema upgrades itself on start when the version is bumped.
 
