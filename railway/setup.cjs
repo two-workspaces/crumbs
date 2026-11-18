@@ -137,6 +137,13 @@ async function resetAdminPassword() {
 			const password = adminPassword('create');
 			await createAdmin(email, password);
 			if (userCount() === 0) throw new Error('setup reported success but no account exists');
+			// Setup signed this script in; drop that session so the admin's session list starts empty.
+			try {
+				const db = openDb();
+				try { db.prepare('DELETE FROM sessions').run(); } finally { db.close(); }
+			} catch (e) {
+				log(`could not clear the setup session (harmless): ${e.message}`);
+			}
 			const which = password === process.env.ADMIN_PASSWORD ? 'ADMIN_PASSWORD' : 'the password printed above';
 			log(`admin account ready: sign in as ${email} with ${which}`);
 		} else if (truthy(process.env.RESET_ADMIN_PASSWORD)) {
